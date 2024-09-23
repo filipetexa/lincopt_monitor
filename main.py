@@ -9,9 +9,9 @@ Estados:
 
 """
 import time
-
-# Conecta e interage com banco de dados postgresql
-import psycopg2
+from config import config
+from database.connection import get_db_connection
+from database.queries import *
 
 
 
@@ -21,6 +21,11 @@ if __name__ == '__main__':
     while True:
         ...
         # 1. Esperando maquina ficar liberada
+        connection = get_db_connection(config['rpa_database'])
+        
+        idle_machines = fetch_idle_machines(connection)
+        
+        print(records)
         
         # 2. Buscando proximo robo
         # 3. Reorganizando fila utilizando algoritimo de ordenação.

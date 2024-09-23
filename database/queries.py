@@ -1,7 +1,7 @@
 from psycopg2 import sql
 
 # Busca as maquinas disponives
-def fetch_available_machines(connection):
+def fetch_idle_machines(connection):
     try:
         cursor = connection.cursor()
         query_statement = "SELECT * FROM machines_status WHERE current_status = 'idle'"
