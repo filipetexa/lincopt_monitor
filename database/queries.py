@@ -23,7 +23,7 @@ def fetch_idle_machines(connection):
 # Busca proximo robo a ser executado na fila da base do lincopt
 def fetch_next_bot_in_queue(connection):
     cursor = connection.cursor()
-    query_statemet = "SELECT * FROM queue WHERE queue_position = 1"
+    query_statemet = "SELECT * FROM queue WHERE queue_position = 1 AND is_valid = true"
     
     query = sql.SQL(query_statemet.format(table=sql.Identifier('queue')))
     
@@ -31,3 +31,30 @@ def fetch_next_bot_in_queue(connection):
     records = cursor.fetchall()
     
     return records
+
+# Busca todos os itens da tabela queue
+def fetch_all_bots_in_queue(connection):
+    cursor = connection.cursor()
+    query_statemet = "SELECT * FROM queue WHERE is_valid = true"
+    
+    query = sql.SQL(query_statemet.format(table=sql.Identifier('queue')))
+    
+    cursor.execute(query)
+    records = cursor.fetchall()
+    
+    return records
+
+# Deleta todos os itens da tabela 
+# Marcar is_valid as false
+def delete_all_bots_in_queue(connection):
+    
+    cursor = connection.cursor()
+    query_statemet = "UPDATE queue \
+                        SET is_valid = false \
+                        WHERE is_valid = True"
+    
+    
+    
+    cursor.execute(query_statemet)
+    connection.commit()  # Confirmando a transação no banco de dados
+    cursor.close()  # Fechando o cursor
