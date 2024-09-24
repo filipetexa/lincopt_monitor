@@ -1,4 +1,5 @@
 from psycopg2 import sql
+from datetime import datetime
 
 # Busca as maquinas disponives
 def fetch_idle_machines(connection):
@@ -19,6 +20,34 @@ def fetch_idle_machines(connection):
         # Fechar o cursor e a conexão
         if cursor:
             cursor.close()
+            
+            
+
+# Inclui novos robos na fila de execução
+def insert_bot_in_queue(connection, queue_position, robot_name):
+    try:
+        cursor = connection.cursor()
+        query_statement = """
+            INSERT INTO queue (queue_position, robot_name, added_at, is_valid)
+            VALUES (%s, %s, %s, %s)
+        """
+        
+        # Inserir os valores com o horário atual e is_valid como True
+        added_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        
+        is_valid = True
+        
+        cursor.execute(query_statement,(queue_position, robot_name, added_at, is_valid))
+        connection.commit()
+        ...
+    except Exception as e:
+        print(f"Ocorreu um erro na insersão do robo {robot_name} na fila: {e}")    
+    finally:
+        # Fechar o cursor e a conexão
+        if cursor:
+            cursor.close()
+    
+
             
 # Busca proximo robo a ser executado na fila da base do lincopt
 def fetch_next_bot_in_queue(connection):
@@ -61,9 +90,11 @@ def fetch_all_bots_in_queue(connection):
 def delete_all_bots_in_queue(connection):
     try:
         cursor = connection.cursor()
-        query_statemet = "UPDATE queue \
-                            SET is_valid = false \
-                            WHERE is_valid = True"
+        query_statemet = """
+        UPDATE queue 
+        SET is_valid = false 
+        WHERE is_valid = True
+        """
         
         cursor.execute(query_statemet)
         connection.commit()  # Confirmando a transação no banco de dados
