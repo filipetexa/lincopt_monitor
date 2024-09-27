@@ -1,5 +1,6 @@
 from psycopg2 import sql
 from datetime import datetime
+from utils.utils import * 
 
 # Busca as maquinas disponives
 def fetch_idle_machines(connection):
@@ -76,6 +77,8 @@ def fetch_all_bots_in_queue(connection):
         
         cursor.execute(query)
         records = cursor.fetchall()
+        
+        records = list_of_tuple_to_list_of_lists(records)
         
         return records
 
