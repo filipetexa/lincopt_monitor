@@ -13,6 +13,8 @@ from config import config
 from database.connection import get_db_connection
 from database.queries import *
 from utils.optimization_algorithms import *
+from utils.utils import *
+from copy import deepcopy
 
 
 # Variaveis Globais:
